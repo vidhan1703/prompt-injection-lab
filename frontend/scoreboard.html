@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Prompt Injection Lab — Scoreboard</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="layout" id="layout"></div>
+  <script src="js/common.js"></script>
+  <script>
+    async function render() {
+      await ensurePlayerName();
+      const { scoreboard } = await api("/api/scoreboard");
+      const rows = scoreboard
+        .map(
+          (r, i) => `<tr><td class="sb-rank">#${i + 1}</td><td>${r.name}</td><td>${r.score.toLocaleString()}</td></tr>`
+        )
+        .join("");
+      document.getElementById("layout").innerHTML = `
+        ${renderSidebar("scoreboard")}
+        <main class="main">
+          <div class="title-block" style="margin-bottom:28px;">
+            <h1><span class="accent">Scoreboard</span> ${ICONS.trophy}</h1>
+            <p>See how you stack up against everyone else training here.</p>
+          </div>
+          <div class="panel" style="max-width:640px;">
+            <table class="sb-table">
+              <thead><tr><th>Rank</th><th>Player</th><th>Score</th></tr></thead>
+              <tbody>${rows || `<tr><td colspan="3" style="color:var(--text-dim)">No scores yet — go solve a lab!</td></tr>`}</tbody>
+            </table>
+          </div>
+        </main>
+      `;
+    }
+    render();
+  </script>
+</body>
+</html>
